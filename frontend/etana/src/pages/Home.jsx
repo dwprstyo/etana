@@ -1,9 +1,42 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../style/home.css";
+import { useSelector } from "react-redux";
+import axios from "axios";
 import Button from "react-bootstrap/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Home = () => {
+  const baseUrl = useSelector((state) => state.base_url);
+  const navigate = useNavigate();
+  const [dataPegawai, setDataPegawai] = useState([]);
+
+  const getData = () => {
+    axios
+      .get(`${baseUrl}/pegawai`)
+      .then((res) => {
+        setDataPegawai(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const delData = (nik) => {
+    axios.delete(`${baseUrl}/pegawai/${nik}`).then(() => {
+        getData();
+    }).catch((err) => {
+        console.log(err);
+    })
+  };
+
+  const editData = (nik) => {
+    navigate(`/edit/${nik}`);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     <div className="container-xl mt-5">
       <div className="row">
@@ -17,7 +50,7 @@ const Home = () => {
         </div>
       </div>
       <div className="row mt-5">
-        <div className="col">
+        <div className="table-responsive">
           <table className="table">
             <thead>
               <tr>
@@ -30,17 +63,25 @@ const Home = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>330402021299001</td>
-                <td>Kuat Dwi Prasetiyo</td>
-                <td>02-12-1999</td>
-                <td>12-08-2018</td>
-                <td>Jakarta</td>
-                <td className="d-flex gap-2">
-                  <Button className="btn-warning w-50 h-25 p-1">edit</Button>
-                  <Button className="btn-danger w-50 h-25 p-1">delete</Button>
-                </td>
-              </tr>
+              {dataPegawai.map((item) => {
+                return (
+                  <tr key={item.nik}>
+                    <td>{item.nik}</td>
+                    <td>{item.nama}</td>
+                    <td>{item.tanggal_lahir}</td>
+                    <td>{item.tanggal_masuk}</td>
+                    <td>{item.alamat}</td>
+                    <td>
+                      <Button className="btn-warning btn-sm h-25 p-1 m-1 btn-custom" onClick={() => editData(item.nik)}>
+                        edit
+                      </Button>
+                      <Button className="btn-danger btn-sm h-25 p-1 m-1 btn-custom" onClick={() => delData(item.nik)}>
+                        delete
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
