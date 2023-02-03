@@ -8,10 +8,10 @@ POST http://localhost:5000/pegawai
 Content-Type: application/json
 
 {
-   "nik": "3304020212990005",
-   "nama": "Kuat Dwi Prasetiyo",
-   "tanggal_lahir": "1999-12-02",
-   "tanggal_masuk": "1999-12-02",
+   "nik": "3304020212990003",
+   "nama": "Brata Putra",
+   "tanggal_lahir": "1995-12-02",
+   "tanggal_masuk": "2021-12-02",
    "alamat": "Jakarta"
 }
 
@@ -21,8 +21,8 @@ PUT http://localhost:5000/pegawai/3304020212990002
 Content-Type: application/json
 
 {
-   "nik": "3304020212990004",
-   "nama": "Evy Rahmadhani",
+   "nik": "3304020212990002",
+   "nama": "Brata Putra",
    "tanggal_lahir": "1999-12-02",
    "tanggal_masuk": "1999-12-02",
    "alamat": "Jakarta"
@@ -30,4 +30,4 @@ Content-Type: application/json
 
 
 ###
-DELETE http://localhost:5000/pegawai/3304020212990005
+DELETE http://localhost:5000/pegawai/3304020212990002
