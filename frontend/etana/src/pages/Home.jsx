@@ -3,16 +3,17 @@ import "../style/home.css";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
+import { DropdownButton, Dropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 
 const Home = () => {
   const baseUrl = useSelector((state) => state.base_url);
   const navigate = useNavigate();
   const [dataPegawai, setDataPegawai] = useState([]);
-
-  const getData = () => {
+  
+  const getData = (value) => {
     axios
-      .get(`${baseUrl}/pegawai`)
+      .get(`${baseUrl}/pegawai?filter=${value}`)
       .then((res) => {
         setDataPegawai(res.data);
       })
@@ -22,11 +23,14 @@ const Home = () => {
   };
 
   const delData = (nik) => {
-    axios.delete(`${baseUrl}/pegawai/${nik}`).then(() => {
+    axios
+      .delete(`${baseUrl}/pegawai/${nik}`)
+      .then(() => {
         getData();
-    }).catch((err) => {
+      })
+      .catch((err) => {
         console.log(err);
-    })
+      });
   };
 
   const editData = (nik) => {
@@ -34,7 +38,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    getData();
+    getData(0);
   }, []);
 
   return (
@@ -50,6 +54,25 @@ const Home = () => {
         </div>
       </div>
       <div className="row mt-5">
+        <div className="row m-0 p-0">
+          <div className="col d-flex justify-content-end">
+            <DropdownButton
+              title="filter"
+              id="dropdown-basic-button"
+              variant="light"
+            >
+              <Dropdown.Item onClick={() => getData(1)}>
+                kurang dari 1 tahun
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => getData(2)}>
+                1 tahun hingga 3 tahun
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => getData(3)}>
+                lebih dari 3 tahun
+              </Dropdown.Item>
+            </DropdownButton>
+          </div>
+        </div>
         <div className="table-responsive">
           <table className="table">
             <thead>
@@ -72,10 +95,16 @@ const Home = () => {
                     <td>{item.tanggal_masuk}</td>
                     <td>{item.alamat}</td>
                     <td>
-                      <Button className="btn-warning btn-sm h-25 p-1 m-1 btn-custom" onClick={() => editData(item.nik)}>
+                      <Button
+                        className="btn-warning btn-sm h-25 p-1 m-1 btn-custom"
+                        onClick={() => editData(item.nik)}
+                      >
                         edit
                       </Button>
-                      <Button className="btn-danger btn-sm h-25 p-1 m-1 btn-custom" onClick={() => delData(item.nik)}>
+                      <Button
+                        className="btn-danger btn-sm h-25 p-1 m-1 btn-custom"
+                        onClick={() => delData(item.nik)}
+                      >
                         delete
                       </Button>
                     </td>

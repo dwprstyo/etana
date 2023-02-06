@@ -35,7 +35,10 @@ const Form = () => {
         navigate("/");
       })
       .catch((err) => {
-        console.log(err);
+        let error = err.response.request.status
+        if (error = 409) {
+          alert("NIK Sudah Terdaftar")
+        }
       });
   };
 
@@ -46,7 +49,10 @@ const Form = () => {
         navigate("/");
       })
       .catch((err) => {
-        console.log(err);
+        let error = err.response.request.status
+        if (error = 409) {
+          alert("NIK Sudah Terdaftar")
+        }
       });
   };
 
