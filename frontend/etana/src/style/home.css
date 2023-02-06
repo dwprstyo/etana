@@ -10,3 +10,17 @@
 .btn-custom {
     width: 60px;
 }
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: transparent;
+    outline: 0;
+}
+
+.fa-search {
+    color: gray;
+}
+
+.search-btn {
+    border: none;
+}

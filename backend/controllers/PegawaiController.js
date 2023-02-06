@@ -1,31 +1,29 @@
 import Pegawai from "../models/PegawaiModel.js";
-import { checkDeletedAt, getAllFilterU1, getAllFilterU3, getAllFilterUp3, updateCreate } from "../querries/PegawaiQuerry.js";
+import { checkDeletedAt, getAllFilter, getAllFilterU1, getAllFilterU3, getAllFilterUp3, updateCreate } from "../querries/PegawaiQuerry.js";
 
 export const getPegawai = async (req, res) => {
   try {
     const filter = req.query.filter;
+    const search = req.query.search;
     if (filter > 0) {
       if (filter == 1) {        
-        const response = await getAllFilterU1(filter);
+        const response = await getAllFilterU1(search);
         res.status(200).json(response);
       }
       if (filter == 2) {        
-        const response = await getAllFilterU3(filter);
+        const response = await getAllFilterU3(search);
         res.status(200).json(response);
       }
       if (filter == 3) {        
-        const response = await getAllFilterUp3(filter);
+        const response = await getAllFilterUp3(search);
         res.status(200).json(response);
       }
     } else {
-      const response = await Pegawai.findAll();
+      const response = await getAllFilter(search);
       res.status(200).json(response);
     }
   } catch (error) {
-    res.status(500).json({
-      message: "Error",
-      error,
-    });
+    res.status(500).json(error);
   }
 };
 
@@ -41,10 +39,7 @@ export const getPegawaiByNik = async (req, res) => {
     }
     res.status(200).json(response);
   } catch (error) {
-    res.status(500).json({
-      message: "Error",
-      error,
-    });
+    res.status(500).json(error);
   }
 };
 
@@ -67,10 +62,7 @@ export const createPegawai = async (req, res) => {
       res.status(201).json({ msg: "Berhasil Menambahkan" });
     }
   } catch (error) {
-    res.status(500).json({
-      message: "Error",
-      error,
-    });
+    res.status(500).json(error);
   }
 };
 
@@ -112,10 +104,7 @@ export const updatePegawai = async (req, res) => {
       }
     }
   } catch (error) {
-    res.status(500).json({
-      message: "Error",
-      error,
-    });
+    res.status(500).json(error);
   }
 };
 
@@ -128,9 +117,6 @@ export const deletePegawai = async (req, res) => {
     });
     res.status(200).json({ msg: "Deleted" });
   } catch (error) {
-    res.status(500).json({
-      message: "Error",
-      error,
-    });
+    res.status(500).json(error);
   }
 };

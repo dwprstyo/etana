@@ -1,33 +1,44 @@
 import db from "../config/Database.js";
 import Pegawai from "../models/PegawaiModel.js";
 
-export const getAllFilterU1 = () => {
+export const getAllFilter = (search) => {
   return db.query(
-    `SELECT *, DATEDIFF(NOW(), tanggal_masuk) AS years_employed
-  FROM pegawai
-  WHERE DATEDIFF(NOW(), tanggal_masuk) <= 1 * 365 and deletedAt IS NULL`,
+    `SELECT *
+    FROM pegawai
+    WHERE (nama LIKE '%${search}%' OR alamat LIKE '%${search}%' OR nik LIKE '%${search}%') AND deletedAt is NULL`,
     {
       type: db.QueryTypes.SELECT,
     }
   );
 };
 
-export const getAllFilterU3 = () => {
+export const getAllFilterU1 = (search) => {
   return db.query(
     `SELECT *, DATEDIFF(NOW(), tanggal_masuk) AS years_employed
   FROM pegawai
-  WHERE DATEDIFF(NOW(), tanggal_masuk) >= 1 * 365 and DATEDIFF(NOW(), tanggal_masuk) <= 3 * 365 and deletedAt IS NULL`,
+  WHERE DATEDIFF(NOW(), tanggal_masuk) <= 1 * 365 and deletedAt IS NULL and (nama LIKE '%${search}%' OR alamat LIKE '%${search}%' OR nik LIKE '%${search}%')`,
     {
       type: db.QueryTypes.SELECT,
     }
   );
 };
 
-export const getAllFilterUp3 = () => {
+export const getAllFilterU3 = (search) => {
   return db.query(
     `SELECT *, DATEDIFF(NOW(), tanggal_masuk) AS years_employed
   FROM pegawai
-  WHERE DATEDIFF(NOW(), tanggal_masuk) >= 3 * 365 and deletedAt IS NULL`,
+  WHERE DATEDIFF(NOW(), tanggal_masuk) >= 1 * 365 and DATEDIFF(NOW(), tanggal_masuk) <= 3 * 365 and deletedAt IS NULL  and (nama LIKE '%${search}%' OR alamat LIKE '%${search}%' OR nik LIKE '%${search}%')`,
+    {
+      type: db.QueryTypes.SELECT,
+    }
+  );
+};
+
+export const getAllFilterUp3 = (search) => {
+  return db.query(
+    `SELECT *, DATEDIFF(NOW(), tanggal_masuk) AS years_employed
+  FROM pegawai
+  WHERE DATEDIFF(NOW(), tanggal_masuk) >= 3 * 365 and deletedAt IS NULL  and (nama LIKE '%jak%' OR alamat LIKE '%jak%' OR nik LIKE '%jak%')`,
     {
       type: db.QueryTypes.SELECT,
     }

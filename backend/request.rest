@@ -1,4 +1,4 @@
-GET http://localhost:5000/pegawai?filter=3
+GET http://localhost:5000/pegawai?filter=0&search=kuat
 
 ###
 GET http://localhost:5000/pegawai/
