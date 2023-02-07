@@ -3,6 +3,7 @@ import Button from "react-bootstrap/Button";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const Form = () => {
   const baseUrl = useSelector((state) => state.base_url);
@@ -16,11 +17,13 @@ const Form = () => {
     tanggal_masuk: "",
     alamat: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const getDataByNik = () => {
     axios
       .get(`${baseUrl}/pegawai/${param.id}`)
       .then((res) => {
+        setIsLoading(false)
         setForm(res.data);
       })
       .catch((err) => {
@@ -32,6 +35,7 @@ const Form = () => {
     axios
       .post(`${baseUrl}/pegawai`, form)
       .then((res) => {
+        setIsLoading(false)
         navigate("/");
       })
       .catch((err) => {
@@ -46,6 +50,7 @@ const Form = () => {
     axios
       .put(`${baseUrl}/pegawai/${param.id}`, form)
       .then((res) => {
+        setIsLoading(false)
         navigate("/");
       })
       .catch((err) => {
@@ -73,8 +78,10 @@ const Form = () => {
       alert("semua form harus diisi!");
     } else {
       if (isUpdate == true) {
+        setIsLoading(true)
         putForm();
       } else {
+        setIsLoading(true)
         postForm();
       }
     }
@@ -85,6 +92,7 @@ const Form = () => {
       setIsUpdate(false);
     } else {
       setIsUpdate(true);
+      setIsLoading(true)
       getDataByNik();
     }
   }, []);
@@ -102,6 +110,11 @@ const Form = () => {
         </div>
       </div>
       <div className="row mt-5">
+      {isLoading ? (
+          <div className="d-flex justify-content-center pt-5">
+            <ClipLoader color={"#b4b4b4"} loading={isLoading} size={50} />
+          </div>
+        ) : (
         <form>
           <div className="mb-3">
             <label htmlFor="nik" className="form-label">
@@ -172,6 +185,7 @@ const Form = () => {
             </Button>
           </div>
         </form>
+        )}
       </div>
     </div>
   );

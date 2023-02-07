@@ -6,6 +6,7 @@ import Button from "react-bootstrap/Button";
 import { DropdownButton, Dropdown, InputGroup, Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { BsSearch } from "react-icons/bs";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const Home = () => {
   const baseUrl = useSelector((state) => state.base_url);
@@ -14,33 +15,36 @@ const Home = () => {
   const [title, setTitle] = useState("Filter");
   const [search, setSearh] = useState("");
   const [filterValue, setFilterValue] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleSelect = (eventKey, event) => {
     setTitle(event.target.innerText);
-    setFilterValue(eventKey)
+    setFilterValue(eventKey);
   };
 
   const handleFormSearch = (event) => {
-    setSearh(event.target.value)
-  }
+    setSearh(event.target.value);
+  };
 
   const handleSearch = () => {
-    getData()
-  }
+    setIsLoading(true)
+    getData();
+  };
 
   const getData = () => {
     axios
       .get(`${baseUrl}/pegawai?filter=${filterValue}&search=${search}`)
       .then((res) => {
         setDataPegawai(res.data);
+        setIsLoading(false)
       })
       .catch((err) => {
         console.log(err);
       });
-  };
-
-  const delData = (nik) => {
-    axios
+    };
+    
+    const delData = (nik) => {
+      axios
       .delete(`${baseUrl}/pegawai/${nik}`)
       .then(() => {
         getData();
@@ -48,13 +52,14 @@ const Home = () => {
       .catch((err) => {
         console.log(err);
       });
-  };
-
-  const editData = (nik) => {
-    navigate(`/edit/${nik}`);
-  };
-
-  useEffect(() => {
+    };
+    
+    const editData = (nik) => {
+      navigate(`/edit/${nik}`);
+    };
+    
+    useEffect(() => {
+    setIsLoading(true)
     getData(0);
   }, []);
 
@@ -75,7 +80,11 @@ const Home = () => {
           <div className="col d-flex justify-content-end gap-2">
             <Form className="search-expanded">
               <InputGroup>
-                <Form.Control type="text" placeholder="Search" onChange={handleFormSearch}/>
+                <Form.Control
+                  type="text"
+                  placeholder="Search"
+                  onChange={handleFormSearch}
+                />
               </InputGroup>
             </Form>
             <DropdownButton
@@ -91,51 +100,57 @@ const Home = () => {
               <Dropdown.Item eventKey="0">Filter</Dropdown.Item>
             </DropdownButton>
             <Button variant="light" className="search-btn">
-              <BsSearch onClick={handleSearch}/>
+              <BsSearch onClick={handleSearch} />
             </Button>
           </div>
         </div>
-        <div className="table-responsive">
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">NIK</th>
-                <th scope="col">Nama</th>
-                <th scope="col">Tanggal Lahir</th>
-                <th scope="col">Tanggal Masuk</th>
-                <th scope="col">Alamat</th>
-                <th scope="col">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dataPegawai.map((item) => {
-                return (
-                  <tr key={item.nik}>
-                    <td>{item.nik}</td>
-                    <td>{item.nama}</td>
-                    <td>{item.tanggal_lahir}</td>
-                    <td>{item.tanggal_masuk}</td>
-                    <td>{item.alamat}</td>
-                    <td>
-                      <Button
-                        className="btn-warning btn-sm h-25 p-1 m-1 btn-custom"
-                        onClick={() => editData(item.nik)}
-                      >
-                        edit
-                      </Button>
-                      <Button
-                        className="btn-danger btn-sm h-25 p-1 m-1 btn-custom"
-                        onClick={() => delData(item.nik)}
-                      >
-                        delete
-                      </Button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        {isLoading ? (
+          <div className="d-flex justify-content-center pt-5">
+            <ClipLoader color={"#b4b4b4"} loading={isLoading} size={50} />
+          </div>
+        ) : (
+          <div className="table-responsive">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th scope="col">NIK</th>
+                  <th scope="col">Nama</th>
+                  <th scope="col">Tanggal Lahir</th>
+                  <th scope="col">Tanggal Masuk</th>
+                  <th scope="col">Alamat</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {dataPegawai.map((item) => {
+                  return (
+                    <tr key={item.nik}>
+                      <td>{item.nik}</td>
+                      <td>{item.nama}</td>
+                      <td>{item.tanggal_lahir}</td>
+                      <td>{item.tanggal_masuk}</td>
+                      <td>{item.alamat}</td>
+                      <td>
+                        <Button
+                          className="btn-warning btn-sm h-25 p-1 m-1 btn-custom"
+                          onClick={() => editData(item.nik)}
+                        >
+                          edit
+                        </Button>
+                        <Button
+                          className="btn-danger btn-sm h-25 p-1 m-1 btn-custom"
+                          onClick={() => delData(item.nik)}
+                        >
+                          delete
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );
